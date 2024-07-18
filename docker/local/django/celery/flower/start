@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -o errexit
+
+# Treat unset variables and parameters as an error when performing parameter expansion.
+set -o nounset
+
+# Execute the watchfiles command to monitor changes and restart Celery with Flower.
+# -A for Application
+# -b for broker
+
+exec watchfiles celery.__main__.main --args "-A apipro.celery -b \"${CELERY_BROKER}\" flower --basic_auth=\"${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}\""

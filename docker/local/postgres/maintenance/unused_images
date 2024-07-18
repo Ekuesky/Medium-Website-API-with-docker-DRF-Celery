@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -o errexit
+# Treat unset variables and parameters as an error when performing parameter expansion.
+set -o nounset
+# The return value of a pipeline is the status of the last command to exit with a non-zero status,
+# or zero if no command exited with a non-zero status.
+set -o pipefail
+
+# import the constants and messages file
+# shellcheck disable=SC2154
+source "${working_dir}/_src/constants.sh"
+source "${working_dir}/_src/messages.sh"
+
+message_info "Listing all dangling Docker images..."
+# List all dangling Docker images
+dangling_images=$(docker images --filter "dangling=true" -q)
+
+# Check if there are any dangling images
+if [[ -z "${dangling_images}" ]]; then
+  message_info "No dangling images found. Nothing to remove."
+  exit 0
+fi
+
+message_info "Removing dangling Docker images..."
+# Remove all dangling Docker images
+echo "${dangling_images}" | xargs docker rmi
+
+message_success "Dangling Docker images have been removed successfully."

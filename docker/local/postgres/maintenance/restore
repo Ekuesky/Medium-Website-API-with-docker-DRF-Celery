@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -o errexit
+# The return value of a pipeline is the status of the last command to exit with a non-zero status,
+# or zero if no command exited with a non-zero status.
+set -o pipefail
+# Treat unset variables and parameters as an error when performing parameter expansion.
+set -o nounset
+
+# Get the current working directory, in our case the maintenance folder.
+# `dirname ${0}` returns the directory name of the script being run.
+# `$(dirname ${0})` evaluates that directory name.
+# shellcheck disable=SC2034
+working_dir="$(dirname ${0})"
+
+# Import the constants and messages file
+# These files presumably define various constants and functions used in this script.
+source "${working_dir}/_src/constants.sh"
+source "${working_dir}/_src/messages.sh"
+
+# Check if a backup filename has been provided as a parameter.
+if [[ -z ${1+x} ]]; then
+  message_error "Backup filename is not specified yet it is a required parameter. Make sure you provide one and try again."
+  exit 1
+fi
+
+# Construct the full path to the backup file using the provided filename.
+backup_filename="${BACKUP_DIR}/${1}"
+
+# Check if the backup file exists.
+if [[ ! -f "${backup_filename}" ]]; then
+  message_error "No backup with the specified backup filename was found. Check out the 'backups' maintenance script output to see if there is one and try again."
+  exit 1
+fi
+
+# Display a welcome message indicating the start of the restore process.
+message_welcome "Restoring the '${POSTGRES_DB}' database from the '${backup_filename}' backup..."
+
+# Ensure the PostgreSQL user is not 'postgres' for security reasons.
+if [[ "${POSTGRES_USER}" == "postgres" ]]; then
+  message_error "Restoring as 'postgres' user is not allowed. Assign 'POSTGRES_USER' env with another one and try again."
+  exit 1
+fi
+
+# Export the necessary PostgreSQL environment variables.
+export PGHOST="${POSTGRES_HOST}"
+export PGPORT="${POSTGRES_PORT}"
+export PGUSER="${POSTGRES_USER}"
+export PGPASSWORD="${POSTGRES_PASSWORD}"
+export PGDATABASE="${POSTGRES_DB}"
+
+# Display a message and drop the existing database.
+message_info "Dropping the database..."
+dropdb "${PGDATABASE}"
+
+# Display a message and create a new database with the same name.
+message_info "Creating a new database..."
+createdb --owner="${POSTGRES_USER}"
+
+# Display a message and restore the database from the backup file.
+message_info "Applying the backup to the new database..."
+gunzip -c "${backup_filename}" | psql "${POSTGRES_DB}"
+
+# Display a success message indicating the restoration is complete.
+message_success "The '${POSTGRES_DB}' database has been restored successfully from the '${backup_filename}' backup"

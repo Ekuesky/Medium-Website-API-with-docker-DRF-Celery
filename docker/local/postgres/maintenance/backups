@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+#Exit immediately if a command exits with a non-zero status.
+set -o errexit
+#The return value of a pipeline is the status of the last command to exit with a non-zero status, or zero if no command exited with a non-zero status
+set -o pipefail
+#Treat unset variables and parameters as an error when performing parameter expansion.
+set -o nounset
+
+# get the current working directory, in our case maintenance folder
+# shellcheck disable=SC2034
+working_dir="$(dirname ${0})"
+
+# import the constants and messages file
+source "${working_dir}/_src/constants.sh"
+source "${working_dir}/_src/messages.sh"
+
+message_welcome "These are the backups you have got:"
+
+# list in human readable format the backups directory
+ls -lht "${BACKUP_DIR}"
