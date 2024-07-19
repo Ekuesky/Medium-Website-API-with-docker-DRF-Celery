@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 import  environ
 from .logging_conf import *
+from .authconf import *
 
 env = environ.Env()
 
@@ -26,13 +27,22 @@ DJANGO_APPS = [
     "django.contrib.sites"
 ]
 THIRD_APPS= [
-    "rest_framework",
     "django_filters",
     "django_countries",
     "corsheaders",
     "phonenumber_field",
+    # For swagg
     "drf_yasg",
+    # For mail
     "djcelery_email",
+    # For authentication and authorization
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
 ]
 
 LOCAL_APPS = [

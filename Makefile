@@ -73,8 +73,12 @@ show-backups:
 restore:
 	 docker compose -f local-docker-compose.yml exec postgres restore
 
-#TODO: move this to api container
+#Personal usage
 rmi_dangling:
-	 docker compose -f local-docker-compose.yml exec postgres unused_images
+	 docker images --filter "dangling=true" -q | xargs docker rmi
+
+signing_key:
+	python -c "import secrets; print(secrets.token_urlsafe(38))"
+
 
 
