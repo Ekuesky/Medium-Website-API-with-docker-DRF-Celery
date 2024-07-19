@@ -77,6 +77,12 @@ restore:
 rmi_dangling:
 	 docker images --filter "dangling=true" -q | xargs docker rmi
 
+rmi_all:
+	docker rmi $(docker images -q)
+
+empty_docker:
+	docker system prune -a --volumes -f
+
 signing_key:
 	python -c "import secrets; print(secrets.token_urlsafe(38))"
 
