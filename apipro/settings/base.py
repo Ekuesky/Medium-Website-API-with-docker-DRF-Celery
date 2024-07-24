@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import  environ
-from .logging_conf import *
+from .logging_conf import LOGGING
 from .authconf import *
 
 env = environ.Env()
@@ -27,6 +27,7 @@ DJANGO_APPS = [
     "django.contrib.sites"
 ]
 THIRD_APPS= [
+    "rest_framework",
     "django_filters",
     "django_countries",
     "corsheaders",
@@ -39,7 +40,6 @@ THIRD_APPS= [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "dj_rest_auth.registration",
@@ -55,9 +55,9 @@ INSTALLED_APPS= DJANGO_APPS + THIRD_APPS + LOCAL_APPS
 
 MIDDLEWARE= [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -156,9 +156,6 @@ MEDIA_ROOT = os.path.join(ROOT_DIR, 'mediafiles')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-]
 CORS_URLS_REGEX = r"^/api/.*$"
 
 # Define the user model

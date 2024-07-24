@@ -46,9 +46,6 @@ COPY --from=python-build-stage /wheels /wheels
 # Install the Python dependencies from the wheels directory
 RUN pip install --no-cache-dir --no-index --find-links=/wheels /wheels/*
 
-# Copy the rest of the application code
-COPY . ${APP_HOME}
-
 # Copy entrypoint script and make it executable
 COPY ./docker/local/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
@@ -67,6 +64,8 @@ COPY ./docker/local/django/celery/flower/start /start-flower
 RUN sed -i 's/\r$//g' /start-flower
 RUN chmod +x /start-flower
 
+# Copy the rest of the application code
+COPY . ${APP_HOME}
 
 # Set the entrypoint for the container
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT [ "/entrypoint" ]

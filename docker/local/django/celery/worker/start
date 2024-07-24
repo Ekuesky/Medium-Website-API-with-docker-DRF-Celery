@@ -1,10 +1,9 @@
 #!/bin/bash
 
-
 # Exit immediately if a command exits with a non-zero status.
 set -o errexit
 
 # Treat unset variables and parameters as an error when performing parameter expansion.
 set -o nounset
 
-exec watchfiles celery.__main__.main --args '-A apipro.celery worker -l INFO'
+exec watchfiles celery.__main__.main --args '-A apipro.celery worker --loglevel=info -E'

@@ -10,4 +10,6 @@ set -o nounset
 # -A for Application
 # -b for broker
 
-exec watchfiles celery.__main__.main --args "-A apipro.celery -b \"${CELERY_BROKER}\" flower --basic_auth=\"${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}\""
+exec watchfiles celery.__main__.main \
+    --args \
+    "-A apipro.celery -b \"${CELERY_BROKER}\" flower --basic_auth=\"${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}\""
