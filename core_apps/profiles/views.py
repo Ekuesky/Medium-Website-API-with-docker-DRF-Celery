@@ -135,11 +135,10 @@ class UnfollowAPIView(APIView):
         user_profile = request.user.profile
         profile = Profile.objects.get(user__id=user_id)
 
-
         if not user_profile.check_following(profile):
             formatted_response = {
                 "status_code": status.HTTP_400_BAD_REQUEST,
-                "message": f"You can't unfollow {profile.user.first_name} {profile.user.last_name}, since you were not following them in the first place ",
+                "message": f"You can't unfollow {profile.user.first_name} {profile.user.last_name}, since you were not following him in the first place ",
             }
             return Response(
                 formatted_response,

@@ -1,0 +1,7 @@
+# TODO à étuider suivant la chronologie
+
+django\views\generics\base.py
+rest_framework\views.py
+rest_framework\mixins.py
+rest_framework\generics.py
+
