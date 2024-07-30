@@ -24,7 +24,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites"
+    "django.contrib.sites",
 ]
 THIRD_APPS= [
     "rest_framework",
@@ -39,19 +39,19 @@ THIRD_APPS= [
     # For authentication and authorization
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",
+    #"allauth.socialaccount",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "dj_rest_auth.registration",
-    "taggit"
+    "taggit",
 ]
 
 LOCAL_APPS = [
     "core_apps.common",
     "core_apps.users",
-    "core_apps.profiles"
+    "core_apps.profiles",
     "core_apps.articles",
-    "core_apps.ratings"
+    "core_apps.ratings",
 ]
 
 INSTALLED_APPS= DJANGO_APPS + THIRD_APPS + LOCAL_APPS

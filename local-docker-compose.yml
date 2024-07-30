@@ -22,7 +22,7 @@ services:
             - net-api
 
     postgres:
-        container_name: postgres_db
+        container_name: postgres-db
         build:
             context: .
             dockerfile: ./docker/local/postgres/Dockerfile
@@ -43,11 +43,13 @@ services:
             - net-api
 
     redis:
+        container_name: redis-server
         image: redis:7-alpine
         networks:
             - net-api
 
     celery_worker:
+        container_name: celery-worker
         build:
             context: .
             dockerfile: ./docker/local/django/Dockerfile
@@ -66,6 +68,7 @@ services:
             - net-api
 
     flower:
+        container_name: flower
         build:
             context: .
             dockerfile: ./docker/local/django/Dockerfile
@@ -85,6 +88,7 @@ services:
             - net-api
 
     nginx:
+        container_name: nginx
         restart: always
         depends_on:
             - api

@@ -1,3 +1,9 @@
+# Define variables for container names
+API_CONTAINER = django-api
+REDIS_CONTAINER = redis-server
+DB_CONTAINER = postgres-db
+
+
 build:
 	docker compose -f local-docker-compose.yml up --build -d --remove-orphans
 
@@ -73,18 +79,24 @@ show-backups:
 restore:
 	 docker compose -f local-docker-compose.yml exec postgres restore
 
-#Personal usage
+#############Personal usage##########################################################
 rmi_dangling:
-	 docker images --filter "dangling=true" -q | xargs docker rmi
+	@echo "Removing dangling images ..."
+	docker images --filter "dangling=true" -q | xargs docker rmi
 
 rmi_all:
+	@echo "Removing all images ..."
 	docker rmi $(docker images -q)
 
 empty_docker:
+	@echo "Emptying docker"
 	docker system prune -a --volumes -f
 
 signing_key:
 	python -c "import secrets; print(secrets.token_urlsafe(38))"
+
+
+
 
 
 
