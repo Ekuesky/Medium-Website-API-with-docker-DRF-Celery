@@ -1,6 +1,8 @@
 import logging
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from apipro.settings.base import AUTH_USER_MODEL
 from core_apps.profiles.models import Profile
 
@@ -12,4 +14,3 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
         logger.info(f"{instance}'s profile has been created.")
-

@@ -1,15 +1,17 @@
-from pathlib import Path
 import os
-import  environ
-from .logging_conf import LOGGING
+from pathlib import Path
+
+import environ
+
 from .authconf import *
+from .logging_conf import LOGGING
 
 env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
-APP_DIR = os.path.join(ROOT_DIR, 'core_apps')
+APP_DIR = os.path.join(ROOT_DIR, "core_apps")
 
 DEBUG = env.bool("DJANGO_DEBUG", False)
 
@@ -26,7 +28,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
 ]
-THIRD_APPS= [
+THIRD_APPS = [
     "rest_framework",
     "django_filters",
     "django_countries",
@@ -39,7 +41,7 @@ THIRD_APPS= [
     # For authentication and authorization
     "allauth",
     "allauth.account",
-    #"allauth.socialaccount",
+    # "allauth.socialaccount",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "dj_rest_auth.registration",
@@ -54,9 +56,9 @@ LOCAL_APPS = [
     "core_apps.ratings",
 ]
 
-INSTALLED_APPS= DJANGO_APPS + THIRD_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + LOCAL_APPS
 
-MIDDLEWARE= [
+MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -91,18 +93,16 @@ WSGI_APPLICATION = "apipro.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-'''
+"""
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": ROOT_DIR / "db.sqlite3",
     }
 }
-'''
+"""
 
-DATABASES = {
-    "default": env.db("DATABASE_URL")
-}
+DATABASES = {"default": env.db("DATABASE_URL")}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -123,11 +123,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 # argon2 hashers
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.BCryptPasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
 ]
 
 # Internationalization
@@ -148,10 +148,10 @@ ADMIN_URL = "hidden/"
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/staticfiles/"
-STATIC_ROOT = os.path.join(ROOT_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(ROOT_DIR, "staticfiles")
 
 MEDIA_URL = "/mediafiles/"
-MEDIA_ROOT = os.path.join(ROOT_DIR, 'mediafiles')
+MEDIA_ROOT = os.path.join(ROOT_DIR, "mediafiles")
 
 
 # Default primary key field type
@@ -171,9 +171,7 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_RESULT_BACKEND_MAX_RETRIES = 10
 CELERY_TASK_SEND_SENT_EVENT = True
-#CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+# CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 if USE_TZ:
     CELERY_TIMEZONE = TIME_ZONE
-
-

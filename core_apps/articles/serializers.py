@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import Article, ArticleView
+
 from core_apps.profiles.serializers import ProfileSerializer
+
+from .models import Article, ArticleView
 
 
 class TagListField(serializers.Field):
@@ -21,7 +23,6 @@ class TagListField(serializers.Field):
         return tag_objects
 
 
-
 class ArticleSerializer(serializers.ModelSerializer):
     author_info = ProfileSerializer(source="author.profile", read_only=True)
     banner_image = serializers.SerializerMethodField()
@@ -32,8 +33,6 @@ class ArticleSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
 
-
-
     def get_average_rating(self, obj):
         return obj.average_rating()
 
@@ -41,14 +40,14 @@ class ArticleSerializer(serializers.ModelSerializer):
         return obj.banner_image.url
 
     def get_views(self, obj):
-        return  ArticleView.objects.filter(article=obj).count()
+        return ArticleView.objects.filter(article=obj).count()
 
-    def get_created_at(self,obj):
+    def get_created_at(self, obj):
         now = obj.created_at
         formatted_date = now.strftime("%m/%d/%Y, %H:%M:%S")
         return formatted_date
 
-    def get_updated_at(self,obj):
+    def get_updated_at(self, obj):
         then = obj.updated_at
         formatted_date = then.strftime("%m/%d/%Y, %H:%M:%S")
         return formatted_date
@@ -73,7 +72,21 @@ class ArticleSerializer(serializers.ModelSerializer):
             instance.tags.set(validated_data["tags"])
         instance.save()
         return instance
+
     class Meta:
         model = Article
-        fields = ["id","author_info","title","slug", "description", "body","views","average_rating", "estimated_reading_time", "banner_image", "tags",
-                  "created_at", "updated_at"]
+        fields = [
+            "id",
+            "author_info",
+            "title",
+            "slug",
+            "description",
+            "body",
+            "views",
+            "average_rating",
+            "estimated_reading_time",
+            "banner_image",
+            "tags",
+            "created_at",
+            "updated_at",
+        ]

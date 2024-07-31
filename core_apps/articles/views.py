@@ -7,8 +7,9 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics, permissions, status
 from rest_framework.exceptions import NotFound
-from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
+
 from .filters import ArticleFilter
 from .models import Article, ArticleView
 from .pagination import ArticlePaginator
@@ -64,11 +65,14 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         try:
             instance = self.get_object()
         except Http404:
-            raise NotFound({"detail": "L'article avec cet ID n'existe pas.",
-                            "code": "article_not_found"
-                            })
+            raise NotFound(
+                {
+                    "detail": "L'article avec cet ID n'existe pas.",
+                    "code": "article_not_found",
+                }
+            )
 
-            #return Response(status=status.HTTP_404_NOT_FOUND)
+            # return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.get_serializer(instance)
 
@@ -78,4 +82,3 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         )
 
         return Response(serializer.data)
-

@@ -2,6 +2,7 @@ import json
 
 from rest_framework.renderers import JSONRenderer
 
+
 class ProfileJSONRenderer(JSONRenderer):
     charset = "utf-8"
 
@@ -11,7 +12,7 @@ class ProfileJSONRenderer(JSONRenderer):
 
         if errors is not None:
             return super(ProfileJSONRenderer, self).render(data)
-        return json.dumps({"status_code":status_code, "profile":data})
+        return json.dumps({"status_code": status_code, "profile": data})
 
 
 class ProfilesJSONRenderer(JSONRenderer):

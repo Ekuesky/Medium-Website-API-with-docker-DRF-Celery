@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from .forms import UserChangeForm, UserCreationForm
 from .models import User
 
+
 class UserAdmin(BaseUserAdmin):
     ordering = ["email"]
     form = UserChangeForm
@@ -47,10 +48,17 @@ class UserAdmin(BaseUserAdmin):
             None,  # Title for this section, can be None
             {
                 "classes": ("wide",),
-                "fields": ("email", "first_name", "last_name", "password1", "password2"),
+                "fields": (
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "password1",
+                    "password2",
+                ),
             },
         ),
     )
     search_fields = ["email", "first_name", "last_name"]
+
 
 admin.site.register(User, UserAdmin)

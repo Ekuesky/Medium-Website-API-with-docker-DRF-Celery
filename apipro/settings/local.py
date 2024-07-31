@@ -2,8 +2,9 @@ from .base import *
 from .base import env
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env( "DJANGO_SECRET_KEY",
-    default="#p2fa2szwtx_z=qmni2(zcuez4&0%r!$xhb95nr!x&)9f1v97t")
+SECRET_KEY = env(
+    "DJANGO_SECRET_KEY", default="#p2fa2szwtx_z=qmni2(zcuez4&0%r!$xhb95nr!x&)9f1v97t"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

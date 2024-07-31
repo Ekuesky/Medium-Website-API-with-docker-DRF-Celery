@@ -1,5 +1,6 @@
-from django.db import models
 import uuid
+
+from django.db import models
 
 
 class TimeStampedModel(models.Model):
@@ -9,6 +10,5 @@ class TimeStampedModel(models.Model):
     updated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        abstract = True # Tell django this class must not be stored in database
-        ordering = ["-created_at","-updated_at"]
-
+        abstract = True  # Tell django this class must not be stored in database
+        ordering = ["-created_at", "-updated_at"]

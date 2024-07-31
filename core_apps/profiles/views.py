@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
-from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
 
 from apipro.settings.local import DEFAULT_FROM_EMAIL
 
@@ -14,11 +14,12 @@ from .exceptions import CantFollowYourself
 from .models import Profile
 from .pagination import ProfilePagination
 from .renderers import ProfileJSONRenderer, ProfilesJSONRenderer
-from .serializers import FollowingSerializer, ProfileSerializer,UpdateProfileSerializer
+from .serializers import FollowingSerializer, ProfileSerializer, UpdateProfileSerializer
 
 User = get_user_model()
 
-#Lists all profiles.
+
+# Lists all profiles.
 class ProfileListAPIView(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
@@ -40,6 +41,7 @@ class ProfileDetailAPIView(generics.RetrieveAPIView):
         user = self.request.user
         profile = self.get_queryset().get(user=user)
         return profile
+
 
 # Updates the authenticated user's profile.
 class UpdateProfileAPIView(generics.UpdateAPIView):
@@ -63,6 +65,7 @@ class UpdateProfileAPIView(generics.UpdateAPIView):
 # Lists the followers of the authenticated user.
 class FollowerListView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         try:
             profile = Profile.objects.get(user__id=request.user.id)
@@ -76,6 +79,7 @@ class FollowerListView(APIView):
             return Response(formatted_response, status=status.HTTP_200_OK)
         except Profile.DoesNotExist:
             return Response(status=404)
+
 
 # Lists the profiles that a specified user is following.
 class FollowingListView(APIView):
@@ -94,13 +98,14 @@ class FollowingListView(APIView):
         except Profile.DoesNotExist:
             return Response(status=404)
 
+
 # Allows a user to follow another user, sends a notification email.
 class FollowAPIView(APIView):
     def post(self, request, user_id, format=None):
         try:
             follower = Profile.objects.get(user=self.request.user)
             user_profile = request.user.profile
-            #profile = Profile.objects.get(user__id=user_id)
+            # profile = Profile.objects.get(user__id=user_id)
             profile = get_object_or_404(Profile, user__id=user_id)
 
             if profile == follower:

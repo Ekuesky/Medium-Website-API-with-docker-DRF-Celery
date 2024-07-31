@@ -2,6 +2,7 @@ import json
 
 from rest_framework.renderers import JSONRenderer
 
+
 class ArticleJSONRenderer(JSONRenderer):
     charset = "utf-8"
 
@@ -11,7 +12,7 @@ class ArticleJSONRenderer(JSONRenderer):
 
         if errors is not None:
             return super(ArticleJSONRenderer, self).render(data)
-        return json.dumps({"status_code":status_code, "article":data})
+        return json.dumps({"status_code": status_code, "article": data})
 
 
 class ArticlesJSONRenderer(JSONRenderer):

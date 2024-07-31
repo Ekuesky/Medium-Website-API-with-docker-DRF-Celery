@@ -10,6 +10,7 @@ from .read_time_engine import ArticleReadTimeEngine
 
 User = get_user_model()
 
+
 class Article(TimeStampedModel):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="articles")
     title = models.CharField(verbose_name=_("Title"), max_length=255)
@@ -20,7 +21,6 @@ class Article(TimeStampedModel):
         verbose_name=_("banner image"), default="/profile_default.png"
     )
     tags = TaggableManager()
-
 
     def __str__(self):
         return f"{self.title} by {self.author.first_name}"

@@ -3,8 +3,9 @@ from django.contrib import admin
 # Register your models here.
 from . import models
 
+
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ["pkid","id", "author", "title", "slug", "view_count"]
+    list_display = ["pkid", "id", "author", "title", "slug", "view_count"]
     list_display_links = ["pkid", "author"]
     list_filter = ["created_at", "updated_at"]
     search_fields = ["title", "body", "tags"]
@@ -20,4 +21,3 @@ class ArticleViewAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Article, ArticleAdmin)
 admin.site.register(models.ArticleView, ArticleViewAdmin)
-
