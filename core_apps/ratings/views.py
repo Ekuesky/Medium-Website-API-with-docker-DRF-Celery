@@ -20,11 +20,9 @@ class RatingCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         article_id = self.kwargs.get("article_id")
-        article_id = uuid.UUID(article_id)
-        print(article_id)
         if article_id:
             try:
-                article = Article.objects.get(id="article_id")
+                article = Article.objects.get(id=article_id)
             except Article.DoesNotExist:
                 raise ValidationError("Invalid article id provided")
         else:

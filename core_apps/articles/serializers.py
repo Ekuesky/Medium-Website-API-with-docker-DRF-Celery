@@ -6,9 +6,13 @@ from .models import Article, ArticleView
 
 
 class TagListField(serializers.Field):
+
+    # Appelée lors de la sérialisation pour l'affichage d'objets (GET, LIST).
     def to_representation(self, value):
         return [tag.name for tag in value.all()]
 
+
+    # Appelée lors de la déserialization pour la création ou la mise à jour d'objets (POST, PUT, PATCH).'
     def to_internal_value(self, data):
         if not isinstance(data, list):
             raise serializers.ValidationError("Expected a list of tags")

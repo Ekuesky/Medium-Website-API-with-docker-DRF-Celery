@@ -80,6 +80,9 @@ restore:
 	 docker compose -f local-docker-compose.yml exec postgres restore
 
 #############Personal usage##########################################################
+shell:
+	docker compose -f local-docker-compose.yml exec --rm api pytho manage.py shell
+
 rmi_dangling:
 	@echo "Removing dangling images ..."
 	docker images --filter "dangling=true" -q | xargs docker rmi
@@ -94,6 +97,12 @@ empty_docker:
 
 signing_key:
 	python -c "import secrets; print(secrets.token_urlsafe(38))"
+
+test-cov-html:
+	docker compose -f local-docker-compose.yml run --rm api pytest -p no:warnings --cov=. --cov-report html
+
+test-cov-verbose:
+	docker compose -f local-docker-compose.yml run --rm api pytest -p no:warnings --cov=. -v
 
 
 

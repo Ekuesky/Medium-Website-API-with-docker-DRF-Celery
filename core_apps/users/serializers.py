@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             "country",
             "city",
         ]
-
+    # Appelée lors de la sérialisation pour l'affichage d'objets (GET, LIST).
     def to_representation(self, instance):
         representation = super(UserSerializer, self).to_representation(instance)
         if instance.is_superuser:
