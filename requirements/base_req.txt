@@ -14,7 +14,7 @@ pytz==2022.7.1
 django-taggit==3.1.0
 redis==4.5.1
 celery==5.3.0
-flower==1.2.0
+flower
 django-celery-email==3.0.0
 django-allauth==0.52.0
 djangorestframework-simplejwt==5.2.2
