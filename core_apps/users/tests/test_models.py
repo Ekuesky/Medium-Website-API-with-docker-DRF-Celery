@@ -49,6 +49,11 @@ def test_create_user_with_no_lastname(user_factory):
         user_factory.create(last_name=None)
     assert str(err.value) == "The user must have a last name."
 
+@pytest.mark.django_db
+def test_create_user_with_no_firstname(user_factory):
+    with pytest.raises(ValueError) as err:
+        user_factory.create(first_name=None)
+    assert str(err.value) == "The user must have a first name."
 
 @pytest.mark.django_db
 def test_create_user_with_no_email(user_factory):
@@ -100,3 +105,17 @@ def test_update_user(normal_user):
 def test_delete_user(normal_user):
     normal_user.delete()
     assert not User.objects.filter(pk=normal_user.pk).exists()
+
+
+@pytest.mark.django_db
+def test_normalize_email(normal_user):
+    email = normal_user.email
+    normalized_email = normal_user.email.lower()
+    assert email == normalized_email
+@pytest.mark.django_db
+def test_create_user_with_wrong_email(user_factory):
+    # try to create a new user with the wrong email
+    with pytest.raises(ValueError) as err:
+        user_factory.create(email="testexample.com")
+    assert str(err.value) == "You must provide a valid email address"
+
