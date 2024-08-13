@@ -52,6 +52,7 @@ class Migration(migrations.Migration):
                         choices=[("M", "Male"), ("F", "Female"), ("O", "Other")],
                         default="O",
                         verbose_name="gender",
+                        max_length=20,
                     ),
                 ),
                 (

@@ -5,7 +5,12 @@ from core_apps.users.tests.factories import UserFactory
 from django.test import RequestFactory
 from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
+# For preventing automatic profile creation
+from django.db.models.signals import post_save
+from django.contrib.auth import get_user_model
+from core_apps.profiles.signals import create_user_profile
 
+User = get_user_model()
 
 register(UserFactory)
 
@@ -22,14 +27,6 @@ def super_user(db, user_factory):
 
 @pytest.fixture
 def mock_request():
-    """
-    Creates a mocked Django request object with a simulated session and authentication.
-
-    This fixture allows you to test your code that depends on session or
-    authentication functionality without making real requests or needing
-    a fully configured Django application.
-    """
-    # Create a RequestFactory for building fake requests.
     factory = RequestFactory()
 
     # Create a GET request to the root URL ('/').
@@ -49,3 +46,9 @@ def mock_request():
 
     # Return the fully prepared mock request for use in your tests.
     return request
+
+@pytest.fixture(scope='session', autouse=True)
+def disconnect_profile_signal():
+    post_save.disconnect(create_user_profile, sender=User)
+    yield
+    post_save.connect(create_user_profile, sender=User)

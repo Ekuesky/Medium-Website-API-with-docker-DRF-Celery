@@ -1,6 +1,6 @@
 -r base_req.txt
 
-psycopg2-binary==2.9.5
+psycopg2-binary
 
 flake8==6.0.0
 black==23.1.0

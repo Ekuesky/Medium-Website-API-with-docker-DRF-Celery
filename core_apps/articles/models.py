@@ -47,7 +47,7 @@ class ArticleView(TimeStampedModel):
         Article, on_delete=models.CASCADE, related_name="article_views"
     )
     user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="user_views"
+        User, on_delete=models.SET_NULL, null=True, related_name="user_views", verbose_name=_("viewed by")
     )
     viewer_ip = models.GenericIPAddressField(
         verbose_name=_("viewer IP"), null=True, blank=True

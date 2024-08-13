@@ -14,7 +14,7 @@ from .serializers import RatingSerializer
 
 
 class RatingCreateView(generics.CreateAPIView):
-    queryset = not Rating.objects.all()
+    queryset = Rating.objects.all()
     serializer_class = RatingSerializer
     permission_classes = [permissions.IsAuthenticated]
 

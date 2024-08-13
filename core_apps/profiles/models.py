@@ -34,8 +34,8 @@ class Profile(TimeStampedModel):
     gender = models.CharField(
         verbose_name=_("gender"),
         choices=Gender.choices,
-        default=Gender.OTHER,
-        max_length=20,
+        default= Gender.OTHER,
+        max_length=40,
     )
     country = CountryField(
         verbose_name=_("country"), default=_("TG"), blank=False, null=False
