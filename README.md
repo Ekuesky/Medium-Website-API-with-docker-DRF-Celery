@@ -1,6 +1,6 @@
 # apipro
 
-This project provides a basic structure for building a Django REST API. It includes features such as user authentication, profiles, and basic CRUD operations.
+This project provides a professional structure for building a Django REST API with Docker. It includes features such as user authentication, profiles, and basic CRUD operations.
 
 ## Features
 
