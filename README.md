@@ -17,7 +17,7 @@ This project provides a professional structure for building a Django REST API wi
 
 2. Install dependencies:   
     cd apipro
-    pip install -r requirements.txt
+    pip install -r requirements/local_req.txt
 3. Configure database:
     Create a database for your project.
     Update database connection settings in apipro/settings/local.py.
