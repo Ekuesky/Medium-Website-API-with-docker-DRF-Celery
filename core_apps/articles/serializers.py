@@ -3,6 +3,8 @@ from rest_framework import serializers
 from core_apps.profiles.serializers import ProfileSerializer
 
 from .models import Article, ArticleView
+from core_apps.bookmarks.serializers import  BookmarkSerializer
+from ..bookmarks.models import Bookmark
 
 
 class TagListField(serializers.Field):
@@ -10,7 +12,6 @@ class TagListField(serializers.Field):
     # Appelée lors de la sérialisation pour l'affichage d'objets (GET, LIST).
     def to_representation(self, value):
         return [tag.name for tag in value.all()]
-
 
     # Appelée lors de la déserialization pour la création ou la mise à jour d'objets (POST, PUT, PATCH).'
     def to_internal_value(self, data):
@@ -32,10 +33,18 @@ class ArticleSerializer(serializers.ModelSerializer):
     banner_image = serializers.SerializerMethodField()
     estimated_reading_time = serializers.ReadOnlyField()
     tags = TagListField()
+    bookmarks = serializers.SerializerMethodField(read_only=True)
+    bookmark_count = serializers.SerializerMethodField()
     views = serializers.SerializerMethodField()
     average_rating = serializers.ReadOnlyField()
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
+
+    def get_bookmarks(self, obj):
+        bookmarks = Bookmark.objects.filter(article=obj)
+        return BookmarkSerializer(bookmarks, many=True).data
+    def get_bookmark_count(self, obj):
+        return Bookmark.objects.filter(article=obj).count()
 
     def get_average_rating(self, obj):
         return obj.average_rating()
@@ -88,6 +97,8 @@ class ArticleSerializer(serializers.ModelSerializer):
             "body",
             "views",
             "average_rating",
+            "bookmarks",
+            "bookmark_count",
             "estimated_reading_time",
             "banner_image",
             "tags",
