@@ -1,0 +1,51 @@
+generics.CreateAPIView de Django REST Framework:
+
+Méthodes principales:
+
+    get_queryset():
+        Cette méthode retourne un QuerySet qui sera utilisé pour récupérer les objets dans la vue.
+        Par défaut, elle retourne le queryset défini sur la vue.
+        Vous pouvez la surcharger pour personnaliser le QuerySet en fonction de la requête.
+
+    get_serializer_class():
+         Cette méthode retourne la classe de sérialiseur à utiliser pour sérialiser et désérialiser les données.
+         Par défaut, elle retourne le serializer_class défini sur la vue.
+         Vous pouvez la surcharger pour personnaliser le sérialiseur en fonction de la requête.
+
+    get_serializer():
+        Cette méthode crée une instance du sérialiseur en utilisant la classe de sérialiseur retournée par get_serializer_class().
+
+    get_object():
+        Cette méthode est utilisée pour récupérer un objet spécifique à partir du QuerySet en utilisant l'identifiant fourni dans l'URL.
+        Elle n'est pas utilisée dans CreateAPIView car elle est utilisée pour les actions de récupération (GET),
+        de mise à jour (PUT/PATCH) et de suppression (DELETE).
+
+    perform_create(serializer): Cette méthode est appelée après que la validation du sérialiseur est réussie.
+        Elle est utilisée pour créer l'objet dans la base de données en utilisant les données du sérialiseur.
+        Vous pouvez la surcharger pour ajouter une logique personnalisée lors de la création de l'objet.
+
+    create(request, *args, **kwargs):
+        Cette méthode gère la logique pour la création de nouveaux objets.
+        Elle reçoit la requête et les arguments supplémentaires et effectue les actions suivantes:
+        Récupère les données de la requête.
+        Crée une instance du sérialiseur.
+        Valide les données du sérialiseur.
+        Si la validation est réussie, appelle perform_create(serializer).
+        Retourne une réponse appropriée (HTTP 201 Created) avec les données du nouvel objet sérialisé.
+
+Autres méthodes utiles:
+
+    initial(request, *args, **kwargs):
+        Cette méthode est appelée avant get_serializer() et permet d'initialiser le sérialiseur avec des données supplémentaires.
+
+    get_permissions():
+        Cette méthode retourne une liste de classes de permissions à utiliser pour la vue.
+        Vous pouvez la surcharger pour personnaliser les permissions en fonction de la requête.
+
+    check_permissions(request):
+        Cette méthode vérifie si l'utilisateur actuel a les permissions nécessaires pour accéder à la vue.
+        Si l'utilisateur n'a pas les permissions nécessaires, une exception PermissionDenied est levée.
+
+    check_object_permissions(request, obj):
+        Cette méthode vérifie si l'utilisateur actuel a les permissions nécessaires pour effectuer une action sur l'objet donné.
+        Elle est utilisée pour les actions de récupération, de mise à jour et de suppression.

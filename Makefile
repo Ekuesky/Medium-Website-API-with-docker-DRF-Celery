@@ -81,7 +81,7 @@ restore:
 
 #############Personal usage##########################################################
 shell:
-	docker compose -f local-docker-compose.yml exec --rm api pytho manage.py shell
+	docker compose -f local-docker-compose.yml exec api python manage.py shell
 
 rmi_dangling:
 	@echo "Removing dangling images ..."
