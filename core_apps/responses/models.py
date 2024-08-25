@@ -13,8 +13,8 @@ class Response(TimeStampedModel):
     content = models.TextField(verbose_name=_("response content"))
 
     class Meta:
-        verbose_name = _("Response")
-        verbose_name_plural = _("Responses")
+        verbose_name = "Response"
+        verbose_name_plural = "Responses"
         ordering = ["created_at"]
 
     def __str__(self):

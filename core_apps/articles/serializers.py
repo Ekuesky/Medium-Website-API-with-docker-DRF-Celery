@@ -44,7 +44,6 @@ class ArticleSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
 
-
     def get_responses_count(self,obj):
         return obj.responses.count()
     def get_claps_count(self, obj):
@@ -54,7 +53,6 @@ class ArticleSerializer(serializers.ModelSerializer):
         return BookmarkSerializer(bookmarks, many=True).data
     def get_bookmark_count(self, obj):
         return Bookmark.objects.filter(article=obj).count()
-
     def get_average_rating(self, obj):
         return obj.average_rating()
 
