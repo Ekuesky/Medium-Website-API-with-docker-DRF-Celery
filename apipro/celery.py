@@ -19,4 +19,3 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 # Automatically discover tasks from all installed apps listed in Django's INSTALLED_APPS
 # This lambda function ensures that Celery looks for a 'tasks.py' file in each app directory
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
-

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from core_apps.bookmarks.models import Bookmark
 
 
@@ -8,6 +9,5 @@ class BookmarkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bookmark
-        fields = ['id', 'user_fname', 'article_title', "created_at"]
+        fields = ["id", "user_fname", "article_title", "created_at"]
         read_only_fields = ["user"]
-

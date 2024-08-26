@@ -6,4 +6,3 @@ class ResponsesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "core_apps.responses"
     verbose_name = _("Responses")
-

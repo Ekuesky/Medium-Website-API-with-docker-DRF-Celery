@@ -1,6 +1,3 @@
-import uuid
-
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from .models import Rating
@@ -13,4 +10,3 @@ class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
         fields = ["id", "user_first_name", "article_title", "rating", "review"]
-

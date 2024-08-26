@@ -1,11 +1,10 @@
 from django.shortcuts import render
-
-from .serializers import ResponseSerializer
-from .models import Response, Article
 from rest_framework import generics, permissions
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
-from rest_framework.exceptions import ValidationError, PermissionDenied
-from rest_framework.response import Response
+
+from .models import Article, Response
+from .serializers import ResponseSerializer
 
 
 class ResponseListCreateView(generics.ListCreateAPIView):

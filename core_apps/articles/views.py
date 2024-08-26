@@ -6,7 +6,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics, permissions, status
-from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.exceptions import NotFound
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -83,6 +83,7 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
         return Response(serializer.data)
 
+
 class ClapView(generics.CreateAPIView, generics.DestroyAPIView):
     queryset = Clap.objects.all()
     permission_classes = [permissions.IsAuthenticated]
@@ -95,11 +96,16 @@ class ClapView(generics.CreateAPIView, generics.DestroyAPIView):
         article = get_object_or_404(Article, id=article_id)
         # check if user has already clapped for this article
         if Clap.objects.filter(article=article, user=request.user).exists():
-            return Response({"details":"You already clapped for this article"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"details": "You already clapped for this article"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         else:
             clap = Clap.objects.create(user=request.user, article=article)
             clap.save()
-            return Response({"details":"Clap added successfully"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"details": "Clap added successfully"}, status=status.HTTP_201_CREATED
+            )
 
     def delete(self, request, *args, **kwargs):
         # get article_id from url
@@ -110,6 +116,12 @@ class ClapView(generics.CreateAPIView, generics.DestroyAPIView):
         clap = Clap.objects.filter(article=article, user=request.user).first()
         if clap:
             clap.delete()
-            return Response({"details":"Clap deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {"details": "Clap deleted successfully"},
+                status=status.HTTP_204_NO_CONTENT,
+            )
         else:
-            return Response({"details":"You have not clapped for this article"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"details": "You have not clapped for this article"},
+                status=status.HTTP_404_NOT_FOUND,
+            )

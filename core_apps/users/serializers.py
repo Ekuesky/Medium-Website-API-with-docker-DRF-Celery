@@ -29,12 +29,14 @@ class UserSerializer(serializers.ModelSerializer):
             "country",
             "city",
         ]
+
     # Appelée lors de la sérialisation pour l'affichage d'objets (GET, LIST).
     def to_representation(self, instance):
         representation = super(UserSerializer, self).to_representation(instance)
         if instance.is_superuser:
             representation["admin"] = True
         return representation
+
 
 class CustomRegisterSerializer(RegisterSerializer):
     username = None
@@ -43,7 +45,6 @@ class CustomRegisterSerializer(RegisterSerializer):
     email = serializers.EmailField(required=True)
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
-
 
     # Surcharger la fonction get_cleaned_data de RegisterSerializer
     def get_cleaned_data(self):
@@ -71,4 +72,3 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.last_name = self.cleaned_data.get("last_name")
 
         return user
-

@@ -1,4 +1,4 @@
-# TODO à étuider suivant la chronologie
+ TODO à étuider suivant la chronologie
 
 django\views\generics\base.py
 rest_framework\views.py

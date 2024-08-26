@@ -1,7 +1,8 @@
 import pytest
 from django.contrib.auth import get_user_model
-from core_apps.users.serializers import UserSerializer, CustomRegisterSerializer
 from rest_framework.exceptions import ValidationError
+
+from core_apps.users.serializers import CustomRegisterSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -18,6 +19,7 @@ def test_user_serializer_valid_data(normal_user):
     assert "first_name" in serializer.data
     assert "last_name" in serializer.data
     assert "city" in serializer.data
+
 
 @pytest.mark.django_db
 def test_custom_register_serializer_valid_data(mock_request):
@@ -37,6 +39,7 @@ def test_custom_register_serializer_valid_data(mock_request):
     assert user.email == "test@google.com"
     assert user.first_name == "John"
     assert user.last_name == "Doe"
+
 
 @pytest.mark.django_db
 def test_custom_register_serializer_invalid_data():
@@ -59,6 +62,7 @@ def test_to_representation_normal_user(normal_user):
     # check "admin" is not in serializer.data
     serializer = UserSerializer(instance=normal_user)
     assert "admin" not in serializer.data
+
 
 @pytest.mark.django_db
 def test_to_representation_admin_user(super_user):

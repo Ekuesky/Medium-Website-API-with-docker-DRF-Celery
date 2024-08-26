@@ -10,6 +10,7 @@ from .read_time_engine import ArticleReadTimeEngine
 
 User = get_user_model()
 
+
 class Clap(TimeStampedModel):
     article = models.ForeignKey("Article", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -23,6 +24,7 @@ class Clap(TimeStampedModel):
     def __str__(self):
         return f"{self.user.first_name} clapped on {self.article.title}"
 
+
 class Article(TimeStampedModel):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="articles")
     title = models.CharField(verbose_name=_("Title"), max_length=255)
@@ -34,6 +36,7 @@ class Article(TimeStampedModel):
     )
     tags = TaggableManager()
     claps = models.ManyToManyField(User, through=Clap, related_name="clapped_articles")
+
     def __str__(self):
         return f"{self.title} by {self.author.first_name}"
 
@@ -59,7 +62,11 @@ class ArticleView(TimeStampedModel):
         Article, on_delete=models.CASCADE, related_name="article_views"
     )
     user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="user_views", verbose_name=_("viewed by")
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="user_views",
+        verbose_name=_("viewed by"),
     )
     viewer_ip = models.GenericIPAddressField(
         verbose_name=_("viewer IP"), null=True, blank=True

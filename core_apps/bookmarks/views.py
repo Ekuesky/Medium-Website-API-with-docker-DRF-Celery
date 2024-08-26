@@ -1,12 +1,13 @@
-from rest_framework import generics, permissions, status
-from rest_framework.response import Response
-
-from.models import Bookmark
-from.serializers import BookmarkSerializer
-from django.db import IntegrityError
-from rest_framework.exceptions import ValidationError, NotFound, PermissionDenied
-from core_apps.articles.models import Article
 from uuid import UUID
+
+from django.db import IntegrityError
+from rest_framework import generics, permissions, status
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
+
+from core_apps.articles.models import Article
+
+from .models import Bookmark
+from .serializers import BookmarkSerializer
 
 
 class BookmarkCreateView(generics.CreateAPIView):
@@ -15,7 +16,7 @@ class BookmarkCreateView(generics.CreateAPIView):
     queryset = Bookmark.objects.all()
 
     def perform_create(self, serializer):
-        #get article_id from url
+        # get article_id from url
         article_id = self.kwargs.get("article_id")
         # check if article exists in database and required constraint
         if article_id:
@@ -50,7 +51,9 @@ class BookmarkDeleteView(generics.DestroyAPIView):
         article_id = self.kwargs.get("article_id")
         try:
             UUID(str(article_id), version=4)
-            bookmark = Bookmark.objects.get(user=self.request.user, article__id=article_id)
+            bookmark = Bookmark.objects.get(
+                user=self.request.user, article__id=article_id
+            )
             return bookmark
         except Bookmark.DoesNotExist:
             raise NotFound("Bookmark not found")
@@ -59,8 +62,6 @@ class BookmarkDeleteView(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         user = self.request.user
-        if user!= instance.user:
+        if user != instance.user:
             raise ValidationError("You can only delete your own bookmarks")
         instance.delete()
-
-
