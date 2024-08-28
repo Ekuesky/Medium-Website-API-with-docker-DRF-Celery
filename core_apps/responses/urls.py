@@ -4,7 +4,7 @@ from .views import ResponseDetailView, ResponseListCreateView
 
 urlpatterns = [
     path(
-        "response/<uuid:article_id>/",
+        "article/<uuid:article_id>/",
         ResponseListCreateView.as_view(),
         name="response-list-create",
     ),
