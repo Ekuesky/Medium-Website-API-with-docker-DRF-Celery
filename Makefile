@@ -79,23 +79,25 @@ show-backups:
 restore:
 	 docker compose -f local-docker-compose.yml exec postgres restore
 
+
+
 #############Personal usage##########################################################
 shell:
 	docker compose -f local-docker-compose.yml exec api python manage.py shell
 
-rmi_dangling:
+rmi-dangling:
 	@echo "Removing dangling images ..."
 	docker images --filter "dangling=true" -q | xargs docker rmi
 
-rmi_all:
+rmi-all:
 	@echo "Removing all images ..."
 	docker rmi $(docker images -q)
 
-empty_docker:
+empty-docker:
 	@echo "Emptying docker"
 	docker system prune -a --volumes -f
 
-signing_key:
+signing-key:
 	python -c "import secrets; print(secrets.token_urlsafe(38))"
 
 test-cov-html:
@@ -104,7 +106,14 @@ test-cov-html:
 test-cov-verbose:
 	docker compose -f local-docker-compose.yml run --rm api pytest -p no:warnings --cov=. -v
 
+create-index:
+	docker compose -f local-docker-compose.yml run --rm api python manage.py search_index --create
 
+populate-index:
+	docker compose -f local-docker-compose.yml run --rm api python manage.py search_index --populate
+
+rebuild-index:
+	docker compose -f local-docker-compose.yml run --rm api python manage.py search_index --rebuild
 
 
 

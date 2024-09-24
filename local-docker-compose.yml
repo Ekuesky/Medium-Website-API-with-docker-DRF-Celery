@@ -1,4 +1,16 @@
 services:
+    es:
+        container_name: elasticsearch
+        image: elasticsearch:7.17.9
+        environment:
+            - discovery.type=single-node
+        ports:
+            - "9200:9200"
+        networks:
+            - net-api
+
+
+
     api:
         container_name: django-api
         build:
@@ -18,6 +30,7 @@ services:
             - postgres
             - mailhog
             - redis
+            - es
         networks:
             - net-api
 

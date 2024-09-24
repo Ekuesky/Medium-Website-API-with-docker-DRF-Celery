@@ -1,7 +1,7 @@
 from .base import *  # noqa
 from .base import env
 
-ADMINS = [("Alpha Omondi Ogilo", "api.imperfect@gmail.com")]
+ADMINS = [("Ayiek Sky", "api.athomedigital.com")]
 
 # TODO add domain names of the production server
 CSRF_TRUSTED_ORIGINS = ["https://trainingwebdev.com"]

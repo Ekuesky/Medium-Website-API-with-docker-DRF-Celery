@@ -6,3 +6,5 @@ class SearchConfig(AppConfig):
     name = "core_apps.search"
     verbose_name = _("Search")
 
+    def ready(self):
+        import core_apps.search.signals  # noqa: F401

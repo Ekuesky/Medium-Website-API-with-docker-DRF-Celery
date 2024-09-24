@@ -36,7 +36,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     bookmarks = serializers.SerializerMethodField(read_only=True)
     bookmark_count = serializers.SerializerMethodField()
     views = serializers.SerializerMethodField()
-    response = ResponseSerializer(many=True, read_only=True)
+    responses = ResponseSerializer(many=True, read_only=True)
     responses_count = serializers.SerializerMethodField()
     claps_count = serializers.SerializerMethodField()
     average_rating = serializers.ReadOnlyField()
@@ -110,6 +110,8 @@ class ArticleSerializer(serializers.ModelSerializer):
             "average_rating",
             "bookmarks",
             "bookmark_count",
+            "responses",
+            "responses_count",
             "estimated_reading_time",
             "banner_image",
             "tags",

@@ -12,7 +12,7 @@ class ArticleElasticSearchView(DocumentViewSet):
     document = ArticleDocument
     serializer_class = ArticleElasticSearchSerializer
     lookup_field = "id"
-    permission_classes = permissions.AllowAny
+    permission_classes = [permissions.AllowAny]
     filter_backends = [
         FilteringFilterBackend, OrderingFilterBackend, IdsFilterBackend, SearchFilterBackend, DefaultOrderingFilterBackend
     ]
