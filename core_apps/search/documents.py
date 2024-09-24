@@ -1,5 +1,6 @@
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
+
 from core_apps.articles.models import Article
 
 
@@ -18,10 +19,10 @@ class ArticleDocument(Document):
             "number_of_shards": 1,
             "number_of_replicas": 0,
         }
+
     class Django:
         model = Article
         fields = ["created_at"]
-
 
     def prepare_author_first_name(self, instance):
         return instance.author.first_name
@@ -31,5 +32,3 @@ class ArticleDocument(Document):
 
     def prepare_tags(self, instance):
         return [tag.name for tag in instance.tags.all()]
-
-

@@ -1,7 +1,6 @@
 import uuid
 
 from django.db import IntegrityError
-from pip._internal.utils.filesystem import replace
 from rest_framework import generics, permissions
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView

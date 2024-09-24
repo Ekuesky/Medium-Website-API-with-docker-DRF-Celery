@@ -4,8 +4,8 @@ from pathlib import Path
 import environ
 
 from .authconf import *
+from .elastic import ELASTICSEARCH_DSL
 from .logging_conf import LOGGING
-from .elastic import  ELASTICSEARCH_DSL
 
 env = environ.Env()
 
@@ -49,7 +49,7 @@ THIRD_APPS = [
     "taggit",
     # For elasticsearch
     "django_elasticsearch_dsl",
-    "django_elasticsearch_dsl_drf"
+    "django_elasticsearch_dsl_drf",
 ]
 
 LOCAL_APPS = [

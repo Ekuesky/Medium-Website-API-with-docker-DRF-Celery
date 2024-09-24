@@ -1,5 +1,5 @@
-ELASTICSEARCH_DSL={
-    'default': {
-        'hosts': 'es:9200',
+ELASTICSEARCH_DSL = {
+    "default": {
+        "hosts": "es:9200",
     },
 }
