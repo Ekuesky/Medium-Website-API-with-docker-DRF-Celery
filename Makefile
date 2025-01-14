@@ -115,5 +115,7 @@ populate-index:
 rebuild-index:
 	docker compose -f local-docker-compose.yml run --rm api python manage.py search_index --rebuild
 
+check-deploy:
+	docker compose -f local-docker-compose.yml run --rm api python manage.py check --deploy
 
 

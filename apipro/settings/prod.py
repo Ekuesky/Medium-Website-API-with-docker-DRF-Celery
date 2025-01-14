@@ -1,14 +1,14 @@
 from .base import *  # noqa
 from .base import env
 
-ADMINS = [("Ayiek Sky", "api.athomedigital.com")]
+ADMINS = [("Ayiek Sky", "api.ayiekdev.space")]
 
 # TODO add domain names of the production server
-CSRF_TRUSTED_ORIGINS = ["https://trainingwebdev.com"]
+CSRF_TRUSTED_ORIGINS = ["https://ayiekdev.space"]
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["trainingwebdev.com"])
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["ayiekdev.space"])
 
 ADMIN_URL = env("DJANGO_ADMIN_URL")
 
@@ -23,7 +23,7 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 # TODO: change to 518400 later
-SECURE_HSTS_SECONDS = 60
+SECURE_HSTS_SECONDS = 518400
 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
     "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True
@@ -37,7 +37,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_FROM_EMAIL = env(
     "DJANGO_DEFAULT_FROM_EMAIL",
-    default="Authors Haven Support <support@trainingwebdev.com>",
+    default="Authors Haven Support <support@ayiekdev.space>",
 )
 
 SITE_NAME = "Authors Haven"
@@ -51,7 +51,7 @@ EMAIL_SUBJECT_PREFIX = env(
 
 EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
 EMAIL_HOST = "smtp.mailgun.org"
-EMAIL_HOST_USER = "postmaster@mg.trainingwebdev.com"
+EMAIL_HOST_USER = "postmaster@mg.ayiekdev.space"
 EMAIL_HOST_PASSWORD = env("SMTP_MAILGUN_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
