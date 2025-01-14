@@ -1,21 +1,23 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
-import environ
-
-from .authconf import *
-from .elastic import ELASTICSEARCH_DSL
-from .logging_conf import LOGGING
-
-env = environ.Env()
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
 APP_DIR = os.path.join(ROOT_DIR, "core_apps")
 
-DEBUG = env.bool("DJANGO_DEBUG", False)
 
+# Load variables from the environment variables,*
+""" change .env.prod to .env.local in development environment"""
+env_file = os.path.join(ROOT_DIR, ".envs", ".env.local")
+if os.path.isfile(env_file):
+    load_dotenv(env_file)
+
+
+DEBUG = os.getenv("DJANGO_DEBUG", False)
 
 # Application definition
 
@@ -97,7 +99,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "apipro.wsgi.application"
 
-
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -158,7 +169,7 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # Define the user model
 AUTH_USER_MODEL = "users.User"
 
-CELERY_BROKER_URL = env("CELERY_BROKER")
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER")
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
@@ -169,3 +180,50 @@ CELERY_TASK_SEND_SENT_EVENT = True
 
 if USE_TZ:
     CELERY_TIMEZONE = TIME_ZONE
+
+# Authentication configuration
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+}
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "SIGNING_KEY": os.getenv("SIGNING_KEY"),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+}
+
+REST_AUTH = {
+    "REGISTER_SERIALIZER": "core_apps.users.serializers.CustomRegisterSerializer",
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "apipro-access-token",
+    "JWT_AUTH_REFRESH_COOKIE": "apipro-refresh-token",
+}
+
+AUTHENTICATION_BACKENDS = [
+    "allauth.account.auth_backends.AuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+
+# Elasticsearch configuration
+ELASTICSEARCH_DSL = {
+    "default": {
+        "hosts": "es:9200",
+    },
+}
