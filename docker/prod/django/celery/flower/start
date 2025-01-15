@@ -19,7 +19,7 @@ until worker_ready; do
 sleep 1
 done
 # if the workers  are ready print a message then  execute the command
->&2 echo "Celery workers are available and ready!!"
+>&2 echo "Celery workers are available and ready!! :-)"
 
 exec celery \
     -A apipro.celery \
