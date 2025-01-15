@@ -1,26 +1,23 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# CORE CONFIGURATION
+# --------------------------------------------------------------------------------
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-
 APP_DIR = os.path.join(ROOT_DIR, "core_apps")
 
-
-# Load variables from the environment variables,*
-""" change .env.prod to .env.local in development environment"""
-env_file = os.path.join(ROOT_DIR, ".envs", ".env.local")
+# ENVIRONMENT SETUP
+# --------------------------------------------------------------------------------
+env_file = os.path.join(ROOT_DIR, ".envs", ".env.prod")
 if os.path.isfile(env_file):
     load_dotenv(env_file)
 
-
 DEBUG = os.getenv("DJANGO_DEBUG", False)
 
-# Application definition
-
+# APPLICATIONS CONFIGURATION
+# --------------------------------------------------------------------------------
 DJANGO_APPS = [
     "whitenoise.runserver_nostatic",
     "django.contrib.admin",
@@ -31,25 +28,32 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
 ]
+
 THIRD_APPS = [
+    # REST Framework
     "rest_framework",
     "django_filters",
-    "django_countries",
     "corsheaders",
+
+    # Utilities
+    "django_countries",
     "phonenumber_field",
-    # For swagg
+    "taggit",
+
+    # Documentation
     "drf_yasg",
-    # For mail
+
+    # Email
     "djcelery_email",
-    # For authentication and authorization
+
+    # Authentication
     "allauth",
     "allauth.account",
-    # "allauth.socialaccount",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "dj_rest_auth.registration",
-    "taggit",
-    # For elasticsearch
+
+    # Search
     "django_elasticsearch_dsl",
     "django_elasticsearch_dsl_drf",
 ]
@@ -67,6 +71,8 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + LOCAL_APPS
 
+# MIDDLEWARE CONFIGURATION
+# --------------------------------------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -79,8 +85,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "apipro.urls"
-
+# TEMPLATES CONFIGURATION
+# --------------------------------------------------------------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -97,8 +103,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "apipro.wsgi.application"
-
+# DATABASE CONFIGURATION
+# --------------------------------------------------------------------------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -109,24 +115,16 @@ DATABASES = {
         "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
+# PASSWORD CONFIGURATION
+# --------------------------------------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-# argon2 hashers
+
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
@@ -135,40 +133,29 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
+# INTERNATIONALIZATION
+# --------------------------------------------------------------------------------
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Africa/Lome"
-
 USE_I18N = True
-
 USE_TZ = True
-
 SITE_ID = 1
 
-ADMIN_URL = "hidden/"
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+# STATIC AND MEDIA FILES CONFIGURATION
+# --------------------------------------------------------------------------------
 STATIC_URL = "/staticfiles/"
 STATIC_ROOT = os.path.join(ROOT_DIR, "staticfiles")
-
 MEDIA_URL = "/mediafiles/"
 MEDIA_ROOT = os.path.join(ROOT_DIR, "mediafiles")
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
+# ADMIN CONFIGURATION
+# --------------------------------------------------------------------------------
+ADMIN_URL = "hidden/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-CORS_URLS_REGEX = r"^/api/.*$"
-
-# Define the user model
 AUTH_USER_MODEL = "users.User"
 
+# CELERY CONFIGURATION
+# --------------------------------------------------------------------------------
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER")
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ["json"]
@@ -176,21 +163,22 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_RESULT_BACKEND_MAX_RETRIES = 10
 CELERY_TASK_SEND_SENT_EVENT = True
-# CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 if USE_TZ:
     CELERY_TIMEZONE = TIME_ZONE
 
-# Authentication configuration
+# REST FRAMEWORK CONFIGURATION
+# --------------------------------------------------------------------------------
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["dj_rest_auth.jwt_auth.JWTCookieAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
+
+CORS_URLS_REGEX = r"^/api/.*$"
+
+# JWT CONFIGURATION
+# --------------------------------------------------------------------------------
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -201,6 +189,8 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "user_id",
 }
 
+# AUTHENTICATION CONFIGURATION
+# --------------------------------------------------------------------------------
 REST_AUTH = {
     "REGISTER_SERIALIZER": "core_apps.users.serializers.CustomRegisterSerializer",
     "USE_JWT": True,
@@ -221,9 +211,15 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 
-# Elasticsearch configuration
+# ELASTICSEARCH CONFIGURATION
+# --------------------------------------------------------------------------------
 ELASTICSEARCH_DSL = {
     "default": {
         "hosts": "es:9200",
     },
 }
+
+# URLs CONFIGURATION
+# --------------------------------------------------------------------------------
+ROOT_URLCONF = "apipro.urls"
+WSGI_APPLICATION = "apipro.wsgi.application"

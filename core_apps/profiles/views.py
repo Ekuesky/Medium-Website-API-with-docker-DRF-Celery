@@ -8,7 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apipro.settings.local import DEFAULT_FROM_EMAIL
+#TODO: change this to local in development mode
+from apipro.settings.prod import DEFAULT_FROM_EMAIL
 
 from .exceptions import CantFollowYourself
 from .models import Profile

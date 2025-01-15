@@ -1,0 +1,103 @@
+services:
+    es:
+        container_name: elasticsearch
+        image: elasticsearch:7.17.9
+        environment:
+            - discovery.type=single-node
+        ports:
+            - "9200:9200"
+        networks:
+            - reverseProxy_nw
+
+
+    api:
+        container_name: django-api
+        build:
+            context: .
+            dockerfile: ./docker/prod/django/Dockerfile
+        command: /start
+        image: authors_api
+        volumes:
+            - static_volume:/app/staticfiles
+            - media_volume:/app/mediafiles
+        expose:
+            - "8000"
+        env_file:
+            - ./.envs/.env.prod
+        depends_on:
+            - postgres
+            - redis
+            - es
+        networks:
+            - reverseProxy_nw
+
+    postgres:
+        container_name: postgres-db
+        build:
+            context: .
+            dockerfile: ./docker/prod/postgres/Dockerfile
+        image: authors_db
+        volumes:
+            - prod_postgres_data:/var/lib/postgresql/data
+            - prod_postgres_data_backups:/backups
+        env_file:
+            - ./.envs/.env.prod
+        networks:
+            - reverseProxy_nw
+
+
+    redis:
+        container_name: redis-server
+        image: redis:7-alpine
+        networks:
+            - reverseProxy_nw
+
+    celery_worker:
+        container_name: celery-worker
+        build:
+            context: .
+            dockerfile: ./docker/prod/django/Dockerfile
+        image: authors_celery_worker
+        command:
+            - /start-celeryworker
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/.env.prod
+        depends_on:
+            - redis
+            - postgres
+        networks:
+            - reverseProxy_nw
+
+    flower:
+        container_name: flower
+        build:
+            context: .
+            dockerfile: ./docker/prod/django/Dockerfile
+        command:
+            - /start-flower
+        image: authors_flower
+        volumes:
+            - flower_data:/data
+        env_file:
+            - ./.envs/.env.prod
+        ports:
+            - "5555:5555"
+        depends_on:
+            - redis
+            - postgres
+        networks:
+            - reverseProxy_nw
+
+
+networks:
+    reverseProxy_nw:
+        external: true
+
+volumes:
+    static_volume:
+    media_volume:
+    prod_postgres_data: {}
+    prod_postgres_data_backups: {}
+    flower_data: {}

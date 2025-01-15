@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -o errexit
+set -o pipefail
+# Treat unset variables and parameters as an error when performing parameter expansion.
+set -o nounset
+
+exec celery  -A apipro.celery worker --loglevel=info -E
