@@ -10,4 +10,4 @@ set -o nounset
 python /app/manage.py collectstatic --noinput
 python /app/manage.py migrate
 
-exec /usr/local/bin/gunicorn authors_api.wsgi --bind 0.0.0.0:1998 --chdir=/app
+exec /usr/local/bin/gunicorn apipro.wsgi --bind 0.0.0.0:1998 --chdir=/app
