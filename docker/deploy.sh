@@ -43,10 +43,7 @@ ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << 'ENDSS
 
     echo "Building Docker images..."
     cd /app
-    docker compose -f production.yml build flower api postgres celery_worker
-
-    echo "Starting Docker containers..."
-    docker compose -f production.yml up -d --remove-orphans
+    docker compose -f production.yml up --build -d --remove-orphans
 
     echo "Cleaning up..."
     rm -f /tmp/project.tar
