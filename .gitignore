@@ -5,7 +5,7 @@
 staticfiles
 .envs/*
 # include .local
-#!.envs/.env.prod
+!.envs/.env.prod
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
