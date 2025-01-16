@@ -41,9 +41,6 @@ ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << 'ENDSS
     echo "Extracting project files..."
     rm -rf /app/* && tar -xf /tmp/project.tar -C /app
 
-    echo "📤 Securely copying .env file to the server..."
-    scp .envs/.env.prod ayiek@144.126.235.106:/app/.envs/ || exit 1
-
     echo "Building Docker images..."
     cd /app
     docker compose -f production.yml up --build -d --remove-orphans
