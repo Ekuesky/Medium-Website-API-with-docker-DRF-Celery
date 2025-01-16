@@ -38,21 +38,21 @@ fi
 
 # Exécution des commandes sur le serveur
 echo "🛠️  Building and deploying on server..."
-ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << 'ENDSSH'
+ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << ENDSSH
     set -e
     echo "Creating application directory..."
-    mkdir -p $REMOTE_APP_DIR
+    mkdir -p /app
 
     echo "Extracting project files..."
-    rm -rf $REMOTE_APP_DIR/* && tar -xf $REMOTE_TMP_DIR/project.tar -C $REMOTE_APP_DIR
+    rm -rf /app/* && tar -xf /tmp/project.tar -C /app
 
     echo "Starting Docker containers..."
-    cd $REMOTE_APP_DIR
+    cd /app
     docker compose -f production.yml pull
     docker compose -f production.yml up --build -d --remove-orphans
 
     echo "Cleaning up..."
-    rm -f $REMOTE_TMP_DIR/project.tar
+    rm -f /tmp/project.tar
     docker system prune -f
 ENDSSH
 
