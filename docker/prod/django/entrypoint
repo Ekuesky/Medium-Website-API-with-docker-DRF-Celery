@@ -6,7 +6,7 @@ set -o pipefail
 #Treat unset variables and parameters as an error when performing parameter expansion.
 set -o nounset
 
-export CELERY_BROKER_URL="${CELLERY_BROKER}"
+export CELERY_BROKER_URL="${CELERY_BROKER}"
 
 # If POSTGRES_USER is empty or unset then set base_postgres_image_default_user
 if [ -z "${POSTGRES_USER}" ]; then
