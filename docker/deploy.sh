@@ -47,7 +47,6 @@ ssh -o StrictHostKeyChecking=no root@$DIGITAL_OCEAN_IP_ADDRESS << 'ENDSSH'
 
     echo "Cleaning up..."
     rm -f /tmp/project.tar
-    docker system prune -f
 ENDSSH
 
 echo "✅ Deployment completed successfully!"
