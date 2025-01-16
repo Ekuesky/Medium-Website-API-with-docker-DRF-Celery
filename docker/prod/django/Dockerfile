@@ -1,9 +1,9 @@
 # Set the base Python version
 ARG PYTHON_VERSION=3.10.14-bullseye
-FROM python:${PYTHON_VERSION} as python
+FROM python:${PYTHON_VERSION} AS python
 
 # FIRST STAGE (BUILD STAGE)
-FROM python as python-build-stage
+FROM python AS python-build-stage
 
 # Set the build environment (prod by default)
 ARG BUILD_ENVIRONMENT=prod
@@ -20,7 +20,7 @@ COPY ./requirements /requirements
 RUN pip wheel --wheel-dir /wheels -r /requirements/${BUILD_ENVIRONMENT}.txt
 
 # SECOND STAGE (RUN STAGE)
-FROM python as python-run-stage
+FROM python AS python-run-stage
 
 # Set the build environment (prod by default)
 ARG BUILD_ENVIRONMENT=prod
@@ -38,7 +38,7 @@ RUN addgroup --system django && \
     adduser --system --ingroup django django && \
     mkdir -p ${APP_HOME}/staticfiles && \
     chown django:django ${APP_HOME}/staticfiles &&\
-    chmod 775 ${APP_HOME}/staticfiles \
+    chmod 775 ${APP_HOME}/staticfiles
 
 # Install runtime dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \

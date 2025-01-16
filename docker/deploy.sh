@@ -33,7 +33,7 @@ fi
 
 # Exécution des commandes sur le serveur
 echo "🛠️  Building and deploying on server..."
-ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << ENDSSH
+ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << 'ENDSSH'
     set -e
     echo "Creating application directory..."
     mkdir -p /app
@@ -43,8 +43,10 @@ ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << ENDSSH
 
     echo "Building Docker images..."
     cd /app
-    docker compose -f /app/production.yml up --build -d --remove-orphans
+    docker compose -f production.yml build flower api postgres celery_worker
 
+    echo "Starting Docker containers..."
+    docker compose -f production.yml up -d --remove-orphans
 
     echo "Cleaning up..."
     rm -f /tmp/project.tar
