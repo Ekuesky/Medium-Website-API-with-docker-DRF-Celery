@@ -9,11 +9,6 @@ if [ -z "$DIGITAL_OCEAN_IP_ADDRESS" ]; then
     exit 1
 fi
 
-# Vérification de la présence de git, rsync et ssh
-command -v git >/dev/null 2>&1 || { echo "Error: git is required but not installed"; exit 1; }
-command -v rsync >/dev/null 2>&1 || { echo "Error: rsync is required but not installed"; exit 1; }
-command -v ssh >/dev/null 2>&1 || { echo "Error: ssh is required but not installed"; exit 1; }
-
 # Configuration des variables
 REMOTE_USER="root"
 REMOTE_APP_DIR="/app"
@@ -46,10 +41,10 @@ ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << ENDSSH
     echo "Extracting project files..."
     rm -rf /app/* && tar -xf /tmp/project.tar -C /app
 
-    echo "Starting Docker containers..."
+    echo "Building Docker images..."
     cd /app
-    docker compose -f production.yml pull
-    docker compose -f production.yml up --build -d --remove-orphans
+    docker compose -f /app/production.yml up --build -d --remove-orphans
+
 
     echo "Cleaning up..."
     rm -f /tmp/project.tar
