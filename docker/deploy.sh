@@ -33,7 +33,7 @@ fi
 
 # Exécution des commandes sur le serveur
 echo "🛠️  Building and deploying on server..."
-ssh -o StrictHostKeyChecking=no $REMOTE_USER@$DIGITAL_OCEAN_IP_ADDRESS << 'ENDSSH'
+ssh -o StrictHostKeyChecking=no root@$DIGITAL_OCEAN_IP_ADDRESS << 'ENDSSH'
     set -e
     echo "Creating application directory..."
     mkdir -p /app
