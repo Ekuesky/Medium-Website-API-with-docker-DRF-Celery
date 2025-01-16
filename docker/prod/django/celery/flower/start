@@ -1,27 +1,24 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status.
 set -o errexit
-
-# Treat unset variables and parameters as an error when performing parameter expansion.
 set -o nounset
 
-# Execute command to monitor changes and restart Celery with Flower.
-# -A for Application
-# -b for broker
-
-worker_ready() {
-  celery -A apipro.celery inspect ping
+worker_ready(){
+  celery -A authors_api.celery inspect ping
 }
-# until the workers are ready print a message
+
 until worker_ready; do
->&2 echo "Celery workers not available:-("
+
+>&2 echo 'Celery workers not available :-('
+
 sleep 1
+
 done
-# if the workers  are ready print a message then  execute the command
->&2 echo "Celery workers are available and ready!! :-)"
+
+>&2 echo 'Celery workers are available and ready!...:-)'
 
 exec celery \
-    -A apipro.celery \
-    -b "${CELERY_BROKER}" \
-    flower --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"
+  -A authors_api.celery \
+  -b "${CELERY_BROKER}" \
+  flower \
+  --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"
