@@ -5,8 +5,8 @@ FROM python:${PYTHON_VERSION} AS python
 # FIRST STAGE (BUILD STAGE)
 FROM python AS python-build-stage
 
-# Set the build environment (local by default)
-ARG BUILD_ENVIRONMENT=local_req
+# Set the build environment (prod by default)
+ARG BUILD_ENVIRONMENT=prod
 
 # Install dependencies for building Python packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -22,21 +22,28 @@ RUN pip wheel --wheel-dir /wheels -r /requirements/${BUILD_ENVIRONMENT}.txt
 # SECOND STAGE (RUN STAGE)
 FROM python AS python-run-stage
 
-# Set the build environment (local by default)
-ARG BUILD_ENVIRONMENT=local
+# Set the build environment (prod by default)
+ARG BUILD_ENVIRONMENT=prod
 
 # Set the working directory for the application
 ARG APP_HOME=/app
-WORKDIR ${APP_HOME}
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 
+WORKDIR ${APP_HOME}
+
+RUN addgroup --system django && \
+    adduser --system --ingroup django django && \
+    mkdir -p ${APP_HOME}/staticfiles && \
+    chown django:django ${APP_HOME}/staticfiles &&\
+    chmod 775 ${APP_HOME}/staticfiles
+
 # Install runtime dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
     libpq-dev \
-    gettext \
+    gettext netcat \
     && apt-get purge -y --auto-remove -o APT:AutoRemove::RecommendsImportant=false \
     && rm -rf /var/lib/apt/lists/*
 
@@ -47,25 +54,28 @@ COPY --from=python-build-stage /wheels /wheels
 RUN pip install --no-cache-dir --no-index --find-links=/wheels /wheels/*
 
 # Copy entrypoint script and make it executable
-COPY ./docker/local/django/entrypoint /entrypoint
+COPY --chown=django:django ./docker/prod/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 
 # Copy start script and make it executable
-COPY ./docker/local/django/start /start
+COPY --chown=django:django ./docker/prod/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
-COPY ./docker/local/django/celery/worker/start /start-celeryworker
+COPY --chown=django:django ./docker/prod/django/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker
 
-COPY ./docker/local/django/celery/flower/start /start-flower
+COPY --chown=django:django ./docker/prod/django/celery/flower/start /start-flower
 RUN sed -i 's/\r$//g' /start-flower
 RUN chmod +x /start-flower
 
 # Copy the rest of the application code
-COPY . ${APP_HOME}
+COPY --chown=django:django . ${APP_HOME}
 
+RUN chown django:django ${APP_HOME}
+
+USER django
 # Set the entrypoint for the container
 ENTRYPOINT [ "/entrypoint" ]

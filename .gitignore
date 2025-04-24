@@ -2,10 +2,10 @@
 .idea
 .coverage*
 .DS_Store
+project.tar
 staticfiles
 .envs/*
-# include .local
-!.envs/.local/
+#!.envs/.env.prod
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
