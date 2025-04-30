@@ -47,7 +47,7 @@ volume:
 	docker volume inspect local_postgres_data
 
 api-db:
-	docker compose -f local-docker-compose.yml exec postgres psql --username=ayiek --dbname=apipro
+	docker compose -f local-docker-compose.yml exec postgres psql --username=ayiek --dbname=authors-live
 
 flake8:
 	docker compose -f local-docker-compose.yml exec api flake8 .
@@ -98,7 +98,7 @@ empty-docker:
 	docker system prune -a --volumes -f
 
 signing-key:
-	python -c "import secrets; print(secrets.token_urlsafe(38))"
+	python3 -c "import secrets; print(secrets.token_urlsafe(38))"
 
 test-cov-html:
 	docker compose -f local-docker-compose.yml run --rm api pytest -p no:warnings --cov=. --cov-report html

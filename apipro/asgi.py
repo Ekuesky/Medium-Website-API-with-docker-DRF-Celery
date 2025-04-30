@@ -2,6 +2,7 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "apipro.settings.prod")
+# TODO: change this to apipro.settings.prod in prod environment
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "apipro.settings.local")
 
 application = get_asgi_application()

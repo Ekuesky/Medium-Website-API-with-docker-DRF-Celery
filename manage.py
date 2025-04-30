@@ -7,7 +7,7 @@ import sys
 def main():
     """Run administrative tasks."""
     # TODO: change this to apipro.settings.prod in prod environment
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "apipro.settings.prod")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "apipro.settings.local")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

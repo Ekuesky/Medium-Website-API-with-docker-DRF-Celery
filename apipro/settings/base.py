@@ -10,7 +10,8 @@ APP_DIR = os.path.join(ROOT_DIR, "core_apps")
 
 # ENVIRONMENT SETUP
 # --------------------------------------------------------------------------------
-env_file = os.path.join(ROOT_DIR, ".envs", ".env.prod")
+# TODO: Change this in production
+env_file = os.path.join(ROOT_DIR, ".envs", ".env.local")
 if os.path.isfile(env_file):
     load_dotenv(env_file)
 
@@ -30,6 +31,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_APPS = [
+    "django_prometheus",
     # REST Framework
     "rest_framework",
     "django_filters",
@@ -67,6 +69,7 @@ LOCAL_APPS = [
     "core_apps.bookmarks",
     "core_apps.responses",
     "core_apps.search",
+
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + LOCAL_APPS
@@ -74,6 +77,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + LOCAL_APPS
 # MIDDLEWARE CONFIGURATION
 # --------------------------------------------------------------------------------
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -83,6 +87,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 # TEMPLATES CONFIGURATION

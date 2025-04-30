@@ -19,10 +19,13 @@ schema_view = get_schema_view(
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
+admin_url = getattr(settings, 'ADMIN_URL', 'admin/')
+if admin_url == "None" or admin_url is None:
+    admin_url = 'admin/'
 
 urlpatterns = [
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0)),
-    path(settings.ADMIN_URL, admin.site.urls),
+    path(admin_url, admin.site.urls, name="admin"),
     path("api/v1/auth/user/", CustomUserDetailsView.as_view(), name="user_details"),
     path("api/v1/auth/", include("dj_rest_auth.urls")),
     path("api/v1/auth/registration/", include("dj_rest_auth.registration.urls")),
@@ -37,10 +40,15 @@ urlpatterns = [
     path("api/v1/bookmarks/", include("core_apps.bookmarks.urls")),
     path("api/v1/responses/", include("core_apps.responses.urls")),
     path("api/v1/elastic/", include("core_apps.search.urls")),
+    path('metrics/', include('django_prometheus.urls'))
 ]
+# for pattern in urlpatterns:
+#     print(f"Checking pattern: {pattern}")
+#     if hasattr(pattern, 'urlconf_name'):
+#         print(f"URLconf module: {pattern.urlconf_name}")
 
-admin.site.site_header = "Api like a pro Admin"
+admin.site.site_header = "Authors heaven"
 
-admin.site.site_title = "Api like a pro Admin Portal"
+admin.site.site_title = "Authors heaven"
 
-admin.site.index_title = "Welcome to Apipro Portal"
+admin.site.index_title = "Welcome to authors Portal"

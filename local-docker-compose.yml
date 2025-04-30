@@ -9,8 +9,6 @@ services:
         networks:
             - net-api
 
-
-
     api:
         container_name: django-api
         build:
@@ -46,6 +44,18 @@ services:
         networks:
             - net-api
 
+    postgres-exporter:
+        container_name: postgres-exporter
+        image: prometheuscommunity/postgres-exporter:latest
+        environment:
+            - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres-db:5432/postgres?sslmode=disable
+        ports:
+            - "9187:9187"
+        depends_on:
+            - postgres
+        networks:
+            - net-api
+
     mailhog:
         image: mailhog/mailhog:v1.0.0
         container_name: mailhog
@@ -57,6 +67,17 @@ services:
     redis:
         container_name: redis-server
         image: redis:7-alpine
+        networks:
+            - net-api
+
+    redis-exporter:
+        container_name: redis-exporter
+        image: oliver006/redis_exporter:latest
+        command: --redis.addr=redis://redis-server:6379
+        ports:
+            - "9121:9121"
+        depends_on:
+            - redis
         networks:
             - net-api
 
@@ -113,6 +134,120 @@ services:
         networks:
             - net-api
 
+
+    # Pour les métriques
+
+    nginx-exporter:
+        container_name: nginx-exporter
+        image: nginx/nginx-prometheus-exporter:latest
+        command: -nginx.scrape-uri=http://nginx/nginx_status
+        ports:
+            - "9113:9113"
+        depends_on:
+            - nginx
+        networks:
+            - net-api
+
+    # Prometheus service
+    prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        volumes:
+            - ./prometheus:/etc/prometheus
+            - prometheus_data:/prometheus
+        command:
+            - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--storage.tsdb.path=/prometheus'
+            - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+            - '--web.console.templates=/usr/share/prometheus/consoles'
+        ports:
+            - "9090:9090"
+        restart: always
+        networks:
+            - net-api
+
+    # Node exporter pour les métriques système
+    node-exporter:
+        container_name: node-exporter
+        image: prom/node-exporter:latest
+        volumes:
+            - /proc:/host/proc:ro
+            - /sys:/host/sys:ro
+            - /:/rootfs:ro
+        command:
+            - '--path.procfs=/host/proc'
+            - '--path.sysfs=/host/sys'
+            - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+        ports:
+            - "9100:9100"
+        restart: always
+        networks:
+            - net-api
+
+    # Cadvisor pour les métriques des conteneurs
+    cadvisor:
+        container_name: cadvisor
+        image: gcr.io/cadvisor/cadvisor:latest
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:ro
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+            - /dev/disk/:/dev/disk:ro
+        ports:
+            - "8081:8080"
+        restart: always
+        networks:
+            - net-api
+
+    # AlertManager (optionnel)
+    alertmanager:
+        container_name: alertmanager
+        image: prom/alertmanager:latest
+        volumes:
+            - ./prometheus/alertmanager:/etc/alertmanager
+        command:
+            - '--config.file=/etc/alertmanager/alertmanager.yml'
+            - '--storage.path=/alertmanager'
+        ports:
+            - "9093:9093"
+        restart: always
+        networks:
+            - net-api
+
+    # Grafana service
+    grafana:
+        container_name: grafana
+        image: grafana/grafana:latest
+        volumes:
+            - grafana_data:/var/lib/grafana
+            - ./grafana/provisioning:/etc/grafana/provisioning
+        environment:
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+            - GF_USERS_ALLOW_SIGN_UP=false
+            - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-clock-panel
+        ports:
+            - "3000:3000"
+        restart: always
+        depends_on:
+            - prometheus
+        networks:
+            - net-api
+
+    elasticsearch-exporter:
+        container_name: elasticsearch-exporter
+        image: prometheuscommunity/elasticsearch-exporter:latest
+        command:
+            - '--es.uri=http://elasticsearch:9200'
+            - '--es.all=true'
+            - '--es.indices=true'
+        ports:
+            - "9114:9114"
+        depends_on:
+            - es
+        networks:
+            - net-api
+
 networks:
     net-api:
         driver: bridge
@@ -123,3 +258,5 @@ volumes:
     local_postgres_data: {}
     local_postgres_data_backups: {}
     flower_data: {}
+    prometheus_data: {}
+    grafana_data: {}

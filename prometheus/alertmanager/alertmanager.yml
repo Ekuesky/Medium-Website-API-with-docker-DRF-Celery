@@ -1,0 +1,50 @@
+global:
+  resolve_timeout: 5m
+  # Configuration pour l'envoi d'emails
+  smtp_smarthost: 'mailhog:1025'
+  smtp_from: 'alertmanager@ayiekdev.space'
+  smtp_require_tls: false
+
+# Route principale
+route:
+  group_by: ['alertname', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: 'team-email'
+
+  # Sous-routes spécifiques
+  routes:
+  - match:
+      severity: critical
+    receiver: 'team-pager'
+    continue: true
+
+  - match:
+      service: database
+    receiver: 'db-team'
+
+# Définition des receivers (destinataires des alertes)
+receivers:
+- name: 'team-email'
+  email_configs:
+  - to: 'team@ayiekdev.space'
+    send_resolved: true
+
+- name: 'team-pager'
+  email_configs:
+  - to: 'oncall@ayiekdev.space'
+    send_resolved: true
+
+- name: 'db-team'
+  email_configs:
+  - to: 'db-team@ayiekdev.space'
+    send_resolved: true
+
+# Configuration des inhibitions (éviter les alertes en double)
+inhibit_rules:
+- source_match:
+    severity: 'critical'
+  target_match:
+    severity: 'warning'
+  equal: ['alertname', 'instance']

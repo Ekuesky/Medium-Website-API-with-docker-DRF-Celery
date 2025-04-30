@@ -1,0 +1,82 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+# Règles d'alerte
+rule_files:
+  - 'alert_rules.yml'
+
+# Configuration d'AlertManager
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - 'alertmanager:9093'
+
+# Configurations de scraping
+scrape_configs:
+  # Application Django
+  - job_name: 'django'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['django-api:8000']
+        labels:
+          service: 'api'
+
+  # Prometheus lui-même
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+        labels:
+          service: 'monitoring'
+
+  # Redis via son exportateur
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'cache'
+
+  # PostgreSQL via son exportateur
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'database'
+
+  # Nginx via son exportateur
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+        labels:
+          service: 'webserver'
+
+  # Métriques système via node-exporter
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'system'
+
+  # Métriques des conteneurs via cAdvisor
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          service: 'docker'
+
+  # Elasticsearch (si vous ajoutez un exportateur)
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch-exporter:9114']  # Will add this exporter
+        labels:
+           service: 'search'
+
+  # Celery Flower
+  - job_name: 'flower'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['flower:5555']
+        labels:
+          service: 'tasks'

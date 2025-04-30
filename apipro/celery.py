@@ -6,7 +6,7 @@ from django.conf import settings  # Import the settings object from Django
 # TODO: Change this in production
 # Set the default Django settings module for the Celery application
 # This is necessary for Celery to know which Django settings to use
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "apipro.settings.prod")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "apipro.settings.local")
 
 # Create a new Celery application instance named "apipro"
 app = Celery("apipro")
