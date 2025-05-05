@@ -17,11 +17,9 @@ schema_view = get_schema_view(
         license=openapi.License(name="MIT License"),
     ),
     public=True,
-    permission_classes=(permissions.AllowAny,),
+    permission_classes=(permissions.IsAuthenticated if settings.DEBUG is False else permissions.AllowAny,),
 )
-admin_url = getattr(settings, 'ADMIN_URL', 'admin/')
-if admin_url == "None" or admin_url is None:
-    admin_url = 'admin/'
+admin_url = getattr(settings, "ADMIN_URL", "admin/") or "admin/"
 
 urlpatterns = [
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0)),
@@ -40,13 +38,8 @@ urlpatterns = [
     path("api/v1/bookmarks/", include("core_apps.bookmarks.urls")),
     path("api/v1/responses/", include("core_apps.responses.urls")),
     path("api/v1/elastic/", include("core_apps.search.urls")),
-    path('metrics/', include('django_prometheus.urls'))
+    path('', include('django_prometheus.urls'))
 ]
-# for pattern in urlpatterns:
-#     print(f"Checking pattern: {pattern}")
-#     if hasattr(pattern, 'urlconf_name'):
-#         print(f"URLconf module: {pattern.urlconf_name}")
-
 admin.site.site_header = "Authors heaven"
 
 admin.site.site_title = "Authors heaven"

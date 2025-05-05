@@ -12,7 +12,7 @@ alerting:
   alertmanagers:
     - static_configs:
         - targets:
-          - 'alertmanager:9093'
+            - 'alertmanager:9093'
 
 # Configurations de scraping
 scrape_configs:
@@ -65,13 +65,6 @@ scrape_configs:
       - targets: ['cadvisor:8080']
         labels:
           service: 'docker'
-
-  # Elasticsearch (si vous ajoutez un exportateur)
-  - job_name: 'elasticsearch'
-    static_configs:
-      - targets: ['elasticsearch-exporter:9114']  # Will add this exporter
-        labels:
-           service: 'search'
 
   # Celery Flower
   - job_name: 'flower'

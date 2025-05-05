@@ -2,7 +2,7 @@ groups:
   - name: django_alerts
     rules:
       - alert: HighRequestLatency
-        expr: histogram_quantile(0.95, sum(rate(django_http_requests_latency_seconds_bucket[5m])) by (le)) > 0.5
+        expr: histogram_quantile(0.95, sum(rate(django_http_requests_latency_seconds_bucket[5m])) by (le, instance)) > 0.5
         for: 5m
         labels:
           severity: warning
@@ -11,13 +11,13 @@ groups:
           description: "Django request latency is above 500ms (current value: {{ $value }}s)"
 
       - alert: HighErrorRate
-        expr: rate(django_http_responses_total{status_code=~"5.."}[5m]) / rate(django_http_responses_total[5m]) > 0.05
+        expr: sum(rate(django_http_responses_total{status_code=~"5.."}[5m])) / sum(rate(django_http_responses_total[5m])) > 0.05
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "High error rate on {{ $labels.instance }}"
-          description: "More than 5% of requests are failing with 5xx errors"
+          description: "More than 5% of requests are failing with 5xx errors (current value: {{ $value }})"
 
   - name: node_alerts
     rules:
@@ -40,18 +40,18 @@ groups:
           description: "Memory usage is above 85% (current value: {{ $value }}%)"
 
       - alert: LowDiskSpace
-        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} * 100 < 15
+        expr: node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} * 100 < 15
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "Low disk space on {{ $labels.instance }}"
-          description: "Less than 15% disk space available (current value: {{ $value }}%)"
+          description: "Less than 15% disk space available on root filesystem (current value: {{ $value }}%)"
 
   - name: redis_alerts
     rules:
       - alert: RedisDown
-        expr: redis_up == 0
+        expr: redis_up{job="redis"} == 0
         for: 1m
         labels:
           severity: critical
@@ -60,7 +60,7 @@ groups:
           description: "Redis instance is not accessible"
 
       - alert: RedisHighMemoryUsage
-        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 80
+        expr: redis_memory_used_bytes{job="redis"} / redis_memory_max_bytes{job="redis"} * 100 > 80
         for: 5m
         labels:
           severity: warning
@@ -71,7 +71,7 @@ groups:
   - name: postgres_alerts
     rules:
       - alert: PostgresDown
-        expr: pg_up == 0
+        expr: pg_up{job="postgres"} == 0
         for: 1m
         labels:
           severity: critical
@@ -80,7 +80,7 @@ groups:
           description: "PostgreSQL instance is not accessible"
 
       - alert: PostgresHighConnections
-        expr: pg_stat_activity_count / pg_settings_max_connections * 100 > 80
+        expr: pg_stat_activity_count{job="postgres"} / pg_settings_max_connections{job="postgres"} * 100 > 80
         for: 5m
         labels:
           severity: warning

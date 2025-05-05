@@ -87,6 +87,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
     'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
@@ -182,6 +183,7 @@ REST_FRAMEWORK = {
 
 CORS_URLS_REGEX = r"^/api/.*$"
 
+ALLOWED_HOSTS =["*"]
 # JWT CONFIGURATION
 # --------------------------------------------------------------------------------
 SIMPLE_JWT = {
@@ -223,6 +225,11 @@ ELASTICSEARCH_DSL = {
         "hosts": "es:9200",
     },
 }
+
+# PROMETHEUS CONFIGURATION
+# --------------------------------------------------------------------------------
+# Disable auto-export of metrics to avoid port binding issues
+PROMETHEUS_EXPORT_METRICS = False
 
 # URLs CONFIGURATION
 # --------------------------------------------------------------------------------
